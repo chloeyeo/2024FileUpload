@@ -15,7 +15,10 @@ userRouter.get("/", async function (req, res) {
 userRouter.get("/:userId", async function (req, res) {
   try {
     const { userId } = req.params;
-    const user = await User.findById({ userId });
+    //const user = await User.findOne({ _id: userId });
+    // const user = await User.findById({ _id: userId });
+    const user = await User.findById(userId);
+    //const user = await User.findById({userId}); // only THIS does NOT work the above 3 DOES WORK!
     return res.send({ user });
   } catch (error) {
     return res.status(500).send({ error: error.message });
@@ -87,6 +90,59 @@ userRouter.post("/", upload.single("image"), async function (req, res) {
     // since model (=User) in mongoose only accepts a SINGLE OBJECT in param
     // and ignores all extra parameters.
     const user = new User({ ...req.body, filename, originalname });
+    await user.save();
+    return res.send({ user });
+  } catch (error) {
+    return res.status(500).send({ error: error.message });
+  }
+});
+
+userRouter.delete("/:userId", async function (req, res) {
+  try {
+    const { userId } = req.params;
+    const user = await User.findByIdAndDelete(userId);
+    return res.send({ user });
+  } catch (error) {
+    return res.status(500).send({ error: error.message });
+  }
+});
+
+// update whole
+userRouter.put("/:userId", upload.single("image"), async function (req, res) {
+  try {
+    const { userId } = req.params;
+    console.log("req.body:", req.body); // , gives one space
+    console.log("req.file:", req.file);
+    // req.body: {}
+    // req.file: undefined <- why??
+    const {
+      username,
+      name: { first, last },
+      age,
+      email,
+    } = req.body;
+    const { filename, originalname } = req.file;
+    const user = await User.findByIdAndUpdate(
+      userId,
+      {
+        username,
+        name: { first, last },
+        age,
+        email,
+        filename,
+        originalname,
+      },
+      { new: true }
+    );
+    // const user = await User.findByIdAndUpdate(
+    //   userId,
+    //   {
+    //     ...req.body,
+    //     filename,
+    //     originalname,
+    //   },
+    //   { new: true }
+    // );
     return res.send({ user });
   } catch (error) {
     return res.status(500).send({ error: error.message });
