@@ -18,7 +18,14 @@ const UserSchema = new Schema(
     },
     age: Number,
     email: String,
-    imageFileName: String,
+    filename: String,
+    originalname: String,
+    // profilePictureUrl: [
+    //   {
+    //     filename: String,
+    //     originalFileName: String,
+    //   },
+    // ],
   },
   { timestamps: true }
 );

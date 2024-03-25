@@ -29,6 +29,7 @@ const upload = multer({
   storage,
   fileFilter: function (req, file, cb) {
     if (["image/jpeg", "image/png"].includes(file.mimetype)) {
+      // err is always the first parameter of a callback, indicating if an error occurred or not.
       cb(null, true);
     } else {
       cb(new Error("invalid file type: only png and jpeg allowed"), false);
