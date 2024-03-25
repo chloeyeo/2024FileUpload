@@ -4,7 +4,7 @@ const app = express();
 const mongoose = require("mongoose");
 const db_url = process.env.MONGODB_URL;
 const { userRouter } = require("./routes/userRouter");
-const { upload } = require("../middleware/imageUpload");
+const { upload } = require("./middleware/imageUpload");
 
 app.use("/uploads", express.static("uploads"));
 
