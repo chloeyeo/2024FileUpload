@@ -116,9 +116,22 @@ userRouter.post(
   upload.single("profileImage"),
   async function (req, res) {
     try {
+      const salt = await bcrypt.genSalt(saltRounds);
+      const { password, username, email, role } = req.body;
+      // or can do const {hash} = require("bcrypt");
+      // instead of const bcrypt = require("bcrypt");
+      // then do await hash() instead of await bcrypt.hash()
+      const hashedPassword = await bcrypt.hash(password, salt);
       const { filename, originalname } = req.file;
       const profilePic = { filename, originalFileName: originalname };
-      const user = new User({ ...req.body, image: profilePic });
+      const user = new User({
+        password: hashedPassword,
+        username,
+        email,
+        role,
+        image: profilePic,
+      });
+      console.log("password:", password, "hashed psasword:", hashedPassword);
       await user.save();
       return res.send({ user });
     } catch (error) {
