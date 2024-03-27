@@ -3,8 +3,9 @@ dotenv = require("dotenv").config();
 const app = express();
 const mongoose = require("mongoose");
 const db_url = process.env.MONGODB_URL;
-const { userRouter } = require("./routes/userRouter");
-const { upload } = require("./middleware/imageUpload");
+// const { userRouter } = require("./routes/userRouter");
+const { userRouter } = require("./routes/userRouterNew");
+const { imageRouter } = require("./routes/imageRouter");
 
 // Bind application-level middleware to an instance of the app
 // object by using the app.use()
@@ -16,6 +17,7 @@ const { upload } = require("./middleware/imageUpload");
 // now, you can load the files that are in the "uploads" directory:
 // in browser view images when by going to /uploads, such as
 // http://localhost:3000/uploads/img2.jpg
+// express.static(<directory_name>)
 app.use("/uploads", express.static("uploads"));
 
 const server = async function () {
@@ -24,16 +26,8 @@ const server = async function () {
     console.log("db connected");
     mongoose.set("debug", true);
     app.use(express.json());
-    app.post("/upload", upload.single("image"), async function (req, res) {
-      try {
-        console.log("req.file.originalname:", req.file.originalname);
-        console.log("req.file.filename:", req.file.filename);
-        return res.send(req.file);
-      } catch (error) {
-        return res.status(500).send({ error: error.message });
-      }
-    });
     app.use("/user", userRouter);
+    app.use("/upload", imageRouter);
     app.listen(3000);
   } catch (error) {
     console.error(error.message);

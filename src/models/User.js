@@ -6,24 +6,19 @@ const UserSchema = new Schema(
       type: String,
       required: true,
     },
-    name: {
-      first: {
-        type: String,
-        required: true,
-      },
-      last: {
-        type: String,
-        required: true,
-      },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, minLength: 5, required: true },
+    role: { type: Number, required: true, default: 0 }, // role is for authentication - i.e. it is user grade
+    image: {
+      // single image so {} without []
+      filename: { type: String, default: "noimage.jpg" },
+      originalFileName: { type: String, default: "noimage.jpg" },
     },
-    age: Number,
-    email: String,
-    filename: String,
-    originalname: String,
-    // profilePictureUrl: [
+    // images: [ // many images = []
+    //   // {} is a single image inside [] images list
     //   {
-    //     filename: String,
-    //     originalFileName: String,
+    //     filename: { type: String, default: "noimage.jpg" },
+    //     originalFileName: { type: String, default: "noimage.jpg" },
     //   },
     // ],
   },
